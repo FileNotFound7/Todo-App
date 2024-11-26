@@ -1,0 +1,34 @@
+.toolbar {
+    position: fixed;
+    width: var(--toolbar-width);
+    background: light-dark(var(--light-secondary), var(--dark-secondary));
+    left: 0;
+    top: 0;
+    height: calc(100% - 2*var(--padding));
+    padding: var(--padding);
+}
+
+.content {
+    margin-left: calc(var(--toolbar-width) + 2*var(--padding));
+    height: calc(100% - 2*var(--padding));
+    padding: var(--padding);
+    background: light-dark(var(--light-primary), var(--dark-primary));
+}
+
+html, body
+{
+    height: 100%;
+    margin:0px;
+}
+
+:root {
+    --padding: 5px;
+    --toolbar-width:80px;
+    color-scheme: light dark;
+
+    --dark-primary: #242424;
+    --dark-secondary: #545454;
+
+    --light-primary: #f7f7f7;
+    --light-secondary: #d6d4d4;
+}
