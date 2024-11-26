@@ -15,6 +15,26 @@
     background: light-dark(var(--light-primary), var(--dark-primary));
 }
 
+.priority1 {
+    accent-color: #e95a5a
+}
+
+.priority2 {
+    accent-color: #e29a47
+}
+
+.priority3 {
+    accent-color: #e2d047
+}
+
+.priority4 {
+    accent-color: #88e247
+}
+
+.priority5 {
+    accent-color: #47dae2
+}
+
 html, body
 {
     height: 100%;

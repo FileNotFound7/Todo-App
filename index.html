@@ -1,11 +1,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>noteMan</title>
+        <title>Todo List</title>
         <link rel="stylesheet" href="main.css">
     </head>
     <body>
         <div class="toolbar">toolbar</div>
-        <div class="content">content</div>
+        <div class="content">
+            <table class="task-input">
+                <tr>
+                    <th><input id="priority-1" type="radio" name="task-priority" class="priority1" value="1"></th>
+                    <th><input id="priority-2" type="radio" name="task-priority" class="priority2" value="2"></th>
+                    <th><input id="priority-3" type="radio" name="task-priority" class="priority3" value="3"></th>
+                    <th><input id="priority-4" type="radio" name="task-priority" class="priority4" value="4"></th>
+                    <th><input id="priority-5" type="radio" name="task-priority" class="priority5" value="5"></th>
+                    <th><input id="task-name" type="text"></th>
+                    <th><input id="task-description" type="text"></th>
+                    <th><input id="task-date-from" type="datetime-local"></th>
+                    <th><input id="task-date-to" type="datetime-local"></th>
+                </tr>
+            </table>
+            <table class="task-input">
+                <!-- <tr>
+                    <td><input id="id-priority-1" type="radio" name="task-priority" class="priority1" value="1"></td>
+                    <td><input id="id-priority-2" type="radio" name="task-priority" class="priority2" value="2"></td>
+                    <td><input id="id-priority-3" type="radio" name="task-priority" class="priority3" value="3"></td>
+                    <td><input id="id-priority-4" type="radio" name="task-priority" class="priority4" value="4"></td>
+                    <td><input id="id-priority-5" type="radio" name="task-priority" class="priority5" value="5"></td>
+                    <td><input id="id-task-name" type="text"></td>
+                    <td><input id="id-task-description" type="text"></td>
+                    <td><input id="id-task-date-from" type="datetime-local"></td>
+                    <td><input id="id-task-date-to" type="datetime-local"></td>
+                </tr> -->
+            </table>
+            <div class="task-display"></div>
+        </div>
     </body>
 </html>
