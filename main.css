@@ -13,26 +13,39 @@
     height: calc(100% - 2*var(--padding));
     padding: var(--padding);
     background: light-dark(var(--light-primary), var(--dark-primary));
+    padding-left: 10%;
+    padding-right: 10%;
 }
 
 .priority1 {
-    accent-color: #e95a5a
+    accent-color: #e95a5a;
 }
 
 .priority2 {
-    accent-color: #e29a47
+    accent-color: #e29a47;
 }
 
 .priority3 {
-    accent-color: #e2d047
+    accent-color: #e2d047;
 }
 
 .priority4 {
-    accent-color: #88e247
+    accent-color: #88e247;
 }
 
 .priority5 {
-    accent-color: #47dae2
+    accent-color: #47dae2;
+}
+
+img {
+    width:70%;
+    padding: 10px 10px 10px 10px;
+}
+img:hover {
+    width:70%;
+    padding: 10px 10px 10px 10px;
+    background-color: #242424;
+    border-radius: 10px;
 }
 
 html, body
@@ -43,7 +56,7 @@ html, body
 
 :root {
     --padding: 5px;
-    --toolbar-width:80px;
+    --toolbar-width:60px;
     color-scheme: light dark;
 
     --dark-primary: #242424;

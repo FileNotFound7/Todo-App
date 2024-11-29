@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Todo List</title>
-        <link rel="stylesheet" href="main.css">
-    </head>
-    <body>
-        <div class="toolbar">toolbar</div>
-        <div class="content">
-            <table class="task-input"></table>
-            <table class="task-display"></table>
-        </div>
-    </body>
+
+<head>
+    <title>Todo List</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <div class="toolbar">
+        <picture>
+            <source srcset="light/search.svg" media="(prefers-color-scheme: light)" /> <!-- User prefers light mode: -->
+            <source srcset="dark/search.svg" media="(prefers-color-scheme: dark)" /> <!-- User prefers dark mode: -->
+            <img src="light/search.svg" /> <!-- User has no color preference: -->
+        </picture>
+    </div>
+    <div class="content">
+        <table id="tasks"></table>
+    </div>
+</body>
+
 </html>
