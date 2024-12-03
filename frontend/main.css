@@ -1,5 +1,7 @@
 .toolbar {
     position: fixed;
+    display: flex;
+    flex-direction: column;
     width: var(--toolbar-width);
     background: light-dark(var(--light-secondary), var(--dark-secondary));
     left: 0;
@@ -15,6 +17,11 @@
     background: light-dark(var(--light-primary), var(--dark-primary));
     padding-left: 10%;
     padding-right: 10%;
+}
+
+.dvd {
+    border: 2px solid #ffffff;
+    flex-grow: 1;
 }
 
 .priority1 {

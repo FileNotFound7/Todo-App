@@ -5,15 +5,17 @@
     <title>Todo List</title>
     <link rel="stylesheet" href="main.css">
     <script src="main.js"></script>
+    <script src="dvd_bouncer.js"></script>
 </head>
 
 <body>
-    <div class="toolbar">
-        <picture>
+    <div class="toolbar" id="toolbar">
+        <picture id="search">
             <source srcset="light/search.svg" media="(prefers-color-scheme: light)" /> <!-- User prefers light mode: -->
             <source srcset="dark/search.svg" media="(prefers-color-scheme: dark)" /> <!-- User prefers dark mode: -->
             <img src="light/search.svg" /> <!-- User has no color preference: -->
         </picture>
+        <!-- <canvas id="dvd_sidebar" class="dvd"></canvas> -->
     </div>
     <div class="content">
         <table id="tasks"></table>

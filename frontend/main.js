@@ -1,5 +1,5 @@
 class task {
-    constructor(parent, id, name = null, description = null, priority = null, start = null, end = null){
+    constructor(parent, id, name = null, description = null, priority = null, start = null, end = null) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -7,8 +7,8 @@ class task {
         this.start = start;
         this.end = end;
 
-        
-        
+
+
         const input = `<tr id=${id}-row>
             <th><input id="${id}-priority-1" type="radio" name="${id}-task-priority" class="priority1" value="1"></th>
             <th><input id="${id}-priority-2" type="radio" name="${id}-task-priority" class="priority2" value="2"></th>
@@ -68,10 +68,9 @@ class task {
 
 function main() {
     let tasks = document.getElementById("tasks");
+
     console.log(tasks);
     let input = new task(tasks, "new");
-
-    const search = document.createElement("img")
 }
 
 document.addEventListener("DOMContentLoaded", main)
