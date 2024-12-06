@@ -1,0 +1,41 @@
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 123-389-789
+INFO:werkzeug: * Detected change in 'C:\\Users\\Glenn\\Desktop\\RohanCrap\\software\\Todo App\\backend\\app.py', reloading
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 123-389-789
+INFO:werkzeug: * Detected change in 'C:\\Users\\Glenn\\Desktop\\RohanCrap\\software\\Todo App\\backend\\app.py', reloading
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 125-018-311
+INFO:werkzeug: * Detected change in 'C:\\Users\\Glenn\\Desktop\\RohanCrap\\software\\Todo App\\backend\\app.py', reloading
+WARNING:app:Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 125-018-311
+WARNING:app:Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:app:Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 125-018-311
+INFO:werkzeug: * Detected change in 'C:\\Users\\Glenn\\Desktop\\RohanCrap\\software\\Todo App\\backend\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+Table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'from', 'to']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
