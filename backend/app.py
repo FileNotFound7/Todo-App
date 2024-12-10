@@ -24,3 +24,12 @@ def test(uid):
     cur.execute("SELECT * FROM lists WHERE uid=?", (uid,))
     return cur.fetchall()
 
+@app.route("/task/<int:taskid>", methods=["GET", "POST"])
+def test(taskid):
+    if request.method == "GET":
+        cur.execute("SELECT * FROM tasks WHERE taskid=?", (taskid,))
+        return cur.fetchall()
+    else:
+        headers = dict(request.headers)
+        cur.execute("INSERT INTO tasks (name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", (headers["name"], headers["content"], headers["priority"], headers["fromdate"], headers["todate"]))
+        return 

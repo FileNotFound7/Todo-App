@@ -1,4 +1,7 @@
 import sqlite3
+import os
+
+os.chdir("backend")
 
 db_conn = sqlite3.connect("main.sqlite3")
 cur = db_conn.cursor()
