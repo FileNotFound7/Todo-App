@@ -19,20 +19,26 @@
     padding-right: 10%;
 }
 
-.textBox {
-    width: 20%
-}
-
-.dateBox {
-    width: 20%
+.inputBox {
+    width: 20%;
+    display: block;
+    margin:2em;
 }
 
 .task-editor {
     padding-left: var(--toolbar-width);
+    margin: auto
 }
 
 .task-bg {
     background-color: rgba(0,0,0,0.4);
+    visibility: visible;
+    display:absolute;
+    height:100%;
+    width:100%;
+    position: fixed;
+    margin-left: calc(100% - var(--toolbar-width));
+    margin: auto;
 }
 
 .dvd {
@@ -40,23 +46,23 @@
     flex-grow: 1;
 }
 
-.priority1 {
+.priority[value="1"] {
     accent-color: #e95a5a;
 }
 
-.priority2 {
+.priority[value="2"] {
     accent-color: #e29a47;
 }
 
-.priority3 {
+.priority[value="3"] {
     accent-color: #e2d047;
 }
 
-.priority4 {
+.priority[value="4"] {
     accent-color: #88e247;
 }
 
-.priority5 {
+.priority[value="5"] {
     accent-color: #47dae2;
 }
 
@@ -75,6 +81,7 @@ html, body
 {
     height: 100%;
     margin:0px;
+    font-family:'Consolas', monospace;
 }
 
 :root {

@@ -2,7 +2,7 @@ class taskEditor {
     constructor(parent, id, name = null, description = null, priority = null, start = null, end = null) {
         this.id = id;
 
-        var bg = document.createElement("form");
+        var bg = document.createElement("div");
         bg.className = 'task-bg'
 
         var form = document.createElement("form");
