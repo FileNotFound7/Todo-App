@@ -1,0 +1,35 @@
+tasks table is of [] instead of ['taskid', 'listid', 'uid', 'name', 'content', 'priority', 'fromdate', 'todate', 'timestmamp']
+Exception on /newtask [POST]
+Traceback (most recent call last):
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\app.py", line 42, in newtask
+    cur.execute("INSERT INTO tasks (name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", ())
+sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 5, and there are 0 supplied.
+Exception on /newtask [POST]
+Traceback (most recent call last):
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Glenn\Desktop\RohanCrap\software\Todo App\backend\app.py", line 42, in newtask
+    cur.execute("INSERT INTO tasks (name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", ())
+sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 5, and there are 0 supplied.

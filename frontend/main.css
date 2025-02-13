@@ -19,6 +19,22 @@
     padding-right: 10%;
 }
 
+.textBox {
+    width: 20%
+}
+
+.dateBox {
+    width: 20%
+}
+
+.task-editor {
+    padding-left: var(--toolbar-width);
+}
+
+.task-bg {
+    background-color: rgba(0,0,0,0.4);
+}
+
 .dvd {
     border: 2px solid #ffffff;
     flex-grow: 1;
