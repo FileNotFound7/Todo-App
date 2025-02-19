@@ -28,12 +28,17 @@
     margin-bottom: 2em;
 }
 
+.editor_head {
+    text-align: right;
+}
+
 .editor {
     margin: auto;
     padding: 1em;
     background-color:var(--dark-secondary);
     border-radius:2em;
     width:fit-content;
+    margin-top:5em;
 }
 
 .close_btn {
@@ -50,6 +55,7 @@
     top:0;
     left:calc(var(--toolbar-width) + 2*var(--padding));
     text-align: center;
+    vertical-align: middle;
 }
 
 .dvd {

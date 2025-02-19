@@ -45,6 +45,8 @@ def task(taskid):
 @app.route("/newtask", methods=["POST"])
 def newtask():
     formData = request.form.to_dict()
+    if 'priority' not in formData.keys(): formData['priority'] = None
+    formData = { key: None if val == '' else val for key, val in formData.items() }
     cur.execute("INSERT INTO tasks (name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", (formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
     db_conn.commit()
     return "OK", 200
