@@ -17,21 +17,29 @@
         </picture>
         <!-- <canvas id="dvd_sidebar" class="dvd"></canvas> -->
     </div>
-    <div class="task-bg">
-        <form class="task-editor">
-            <input type="radio" name="priority" value="1" class="priority">
-            <input type="radio" name="priority" value="2" class="priority">
-            <input type="radio" name="priority" value="3" class="priority">
-            <input type="radio" name="priority" value="4" class="priority">
-            <input type="radio" name="priority" value="5" class="priority">
-            <input type="text" name="name" class="inputBox">
-            <input type="text" name="description" class="inputBox">
-            <input type="datetime-local" name="from" class="inputBox">
-            <input type="datetime-local" name="to" class="inputBox">
-            <input type="submit" value="submit" class="Submit!">
-        </form>
+    <div class="editor_bg">
+        <div class="editor">
+            <div class="editor_head">
+                <button class="close_btn" onclick=hide_editor()>X</button> <!-- TODO: svg close button -->
+            </div>
+            <form action="http://127.0.0.1:2999/newtask" class="editor_form">
+                <input type="radio" name="priority" value="1" class="priority">
+                <input type="radio" name="priority" value="2" class="priority">
+                <input type="radio" name="priority" value="3" class="priority">
+                <input type="radio" name="priority" value="4" class="priority">
+                <input type="radio" name="priority" value="5" class="priority">
+                <input type="text" name="name" class="inputBox">
+                <input type="text" name="description" class="inputBox">
+                <input type="datetime-local" name="from" class="inputBox">
+                <input type="datetime-local" name="to" class="inputBox">
+                <input type="submit" value="Submit!">
+            </form>
+        </div>
     </div>
     <div class="content">
+        <div id="controls">
+            <button id="new_task" onclick=show_editor()>New Task</button>
+        </div>
         <div id="tasks"></div>
     </div>
 </body>
