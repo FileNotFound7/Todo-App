@@ -5,7 +5,12 @@
     <title>Todo List</title>
     <link rel="stylesheet" href="main.css">
     <script src="main.js"></script>
-    <script src="dvd_bouncer.js"></script>
+    <!-- <script src="dvd_bouncer.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+
+    <link rel="stylesheet" href="jquery-ui1.14.1/jquery-ui.min.css">
+    <script src="jquery-ui1.14.1/external/jquery/jquery.js"></script>
+    <script src="jquery-ui1.14.1/jquery-ui.min.js"></script>
 </head>
 
 <body>
@@ -18,10 +23,7 @@
         <!-- <canvas id="dvd_sidebar" class="dvd"></canvas> -->
     </div>
     <div class="editor_bg">
-        <div class="editor">
-            <div class="editor_head">
-                <button class="close_btn" onclick=hide_editor()>X</button> <!-- TODO: svg close button -->
-            </div>
+        <div id="editor" class="dialog">
             <form class="editor_form">
                 <input type="radio" name="priority" value="1" class="priority">
                 <input type="radio" name="priority" value="2" class="priority">
@@ -35,10 +37,18 @@
                 <input type="submit" value="Submit!">
             </form>
         </div>
+        <div id="login" class="dialog">
+            <form class="login_form">
+                <input type="text" class="inputBox" id="login_username">
+                <input type="password" class="inputBox" id="login_password">
+                <input type="submit" value="Log In!">
+            </form>
+        </div>
     </div>
     <div class="content">
         <div id="controls">
-            <button id="new_task" onclick=show_editor()>New Task</button>
+            <button id="new_task">New Task</button>
+            <button id="login_btn">Log in</button>
         </div>
         <div id="tasks"></div>
     </div>

@@ -3,6 +3,8 @@ from flask_cors import CORS
 import sqlite3, logging
 from sys import stderr
 
+import random, bcrypt # security things
+
 expected_task_structure = ["taskid", "listid", "uid", "name", "content", "priority", "fromdate", "todate", "timestamp"]
 
 app = Flask(__name__)
@@ -18,7 +20,9 @@ app.logger.addHandler(logging.StreamHandler(stderr))
 db_conn = sqlite3.connect("main.sqlite3", check_same_thread=False)
 cur = db_conn.cursor()
 
+
 cur.execute("CREATE TABLE IF NOT EXISTS tasks (taskid, listid, uid, name, content, priority, fromdate, todate, timestamp)")
+cur.execute("CREATE TABLE IF NOT EXISTS users (uid, salt, hash, name)")
 # task_structure = cur.fetchall()
 # if task_structure != expected_task_structure:
 #     app.logger.warning(f"tasks table is of {task_structure} instead of {expected_task_structure}")
@@ -50,5 +54,16 @@ def newtask():
     cur.execute("INSERT INTO tasks (name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", (formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
     db_conn.commit()
     return "OK", 200
+
+@app.route("/login")
+def login():
+    formData = request.form.to_dict()
+    cur.execute('SELECT * FROM users WHERE name = ?', (username,))
+    data = cur.fetchall()
+    if len(data) > 1:
+        salt = data[0][1]
+        hashed = bcrypt.hashpw()
+    else:
+        return "ACCOUNT NOT FOUND", 500
 
 app.run()

@@ -1,14 +1,42 @@
+const backend = 'http://127.0.0.1:2999/'
+
 function main() {
     form = document.querySelector(".editor_form");
     editor_bg = document.querySelector(".editor_bg");
-    console.info(editor_bg)
 
     // Take over form submission
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         sendData();
-        hide_editor();
+        close_modal("#editor");
     });
+
+    $('.login_form')[0].addEventListener("submit", (event) => {
+        event.preventDefault();
+        login()
+    });
+    
+    document.getElementById('new_task').addEventListener("click", (event) => {open_modal("#editor")});
+
+    document.getElementById('login_btn').addEventListener("click", (event) => {open_modal("#login")});
+
+    $('.dialog').dialog();
+    $('.dialog').dialog('close');
+    $('.dialog').on('dialogclose', function(){
+        close_modal(this)
+    });
+}
+
+async function login() {
+    username = $('#login_username')[0].value
+    password = $('#login_password')[0].value
+    if (username == '' || password == '') {
+        alert("Username and password must not be empty")
+    }
+    else{
+        const salt_response = await fetch(backend+"salt?" + new URLSearchParams({user: username}).toString())
+        salt = await salt_response.text()
+    }
 }
 
 async function sendData() {
@@ -28,12 +56,14 @@ async function sendData() {
 }
 
 // 
-function show_editor() {
+function open_modal(id) {
     editor_bg.style.visibility = "visible"
+    $(id).dialog("open")
 }
 
-function hide_editor() {
+function close_modal(id) {
     editor_bg.style.visibility = "hidden"
+    $(id).dialog("close")
 }
 
 addEventListener("DOMContentLoaded", main);
