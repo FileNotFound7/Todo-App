@@ -3,15 +3,16 @@ from flask_cors import CORS
 import sqlite3, logging
 from sys import stderr
 
-import random, bcrypt # security things
+import time
+
+import bcrypt, secrets # security things
 
 expected_task_structure = ["taskid", "listid", "uid", "name", "content", "priority", "fromdate", "todate", "timestamp"]
 
 app = Flask(__name__)
-
 CORS(app)
 
-app.config["SERVER_NAME"] = "127.0.0.1:2999"
+app.config["SERVER_NAME"] = "127.0.0.1:3000"
 app.config["DEBUG"] = True
 
 app.logger.addHandler(logging.FileHandler("app.log"))
@@ -58,11 +59,33 @@ def newtask():
 @app.route("/login")
 def login():
     formData = request.form.to_dict()
+    username = formData.get('username')
+    password = formData.get('password')
     cur.execute('SELECT * FROM users WHERE name = ?', (username,))
     data = cur.fetchall()
     if len(data) > 1:
         salt = data[0][1]
-        hashed = bcrypt.hashpw()
+        hashed = bcrypt.hashpw(password, salt)
+        if hashed == data[0][2]:
+            token = secrets.token_urlsafe(16)
+            refresh_token = secrets.token_urlsafe(16)
+            expiry = time.time()+86400
+            data = {'token': token, 'refresh': refresh_token, 'expiry': expiry}
+            # tokens expire 1 day from creation. refresh token does not expire.
+            return data, 200
+    else:
+        return "ACCOUNT NOT FOUND", 500
+
+@app.route("/new_account")
+def login():
+    formData = request.form.to_dict()
+    username = formData.get('username')
+    password = formData.get('password')
+    cur.execute('SELECT * FROM users WHERE name = ?', (username,))
+    data = cur.fetchall()
+    if len(data) == 0:
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password, salt)
     else:
         return "ACCOUNT NOT FOUND", 500
 
