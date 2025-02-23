@@ -1,4 +1,4 @@
-const backend = 'http://127.0.0.1:2999/'
+const backend = 'http://localhost/api/'
 
 function main() {
     form = document.querySelector(".editor_form");
@@ -34,7 +34,7 @@ async function login() {
         alert("Username and password must not be empty")
     }
     else{
-        const salt_response = await fetch(backend+"salt?" + new URLSearchParams({user: username}).toString())
+        const salt_response = await fetch(backend+"login")
         salt = await salt_response.text()
     }
 }
@@ -44,7 +44,7 @@ async function sendData() {
     const formData = new FormData(form);
 
     try {
-        const response = await fetch("http://127.0.0.1:2999/newtask", {
+        const response = await fetch(backend+"newtask", {
             method: "POST",
             // Set the FormData instance as the request body
             body: formData,

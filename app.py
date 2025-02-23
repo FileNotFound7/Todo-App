@@ -1,5 +1,5 @@
-from flask import Flask, request
-from flask_cors import CORS
+from flask import Flask, request, redirect
+# from flask_cors import CORS
 import sqlite3, logging
 from sys import stderr
 
@@ -9,10 +9,10 @@ import bcrypt, secrets # security things
 
 expected_task_structure = ["taskid", "listid", "uid", "name", "content", "priority", "fromdate", "todate", "timestamp"]
 
-app = Flask(__name__)
-CORS(app)
+app = Flask(__name__, static_url_path='', static_folder='static')
+# CORS(app)
 
-app.config["SERVER_NAME"] = "127.0.0.1:3000"
+app.config["SERVER_NAME"] = "localhost:80"
 app.config["DEBUG"] = True
 
 app.logger.addHandler(logging.FileHandler("app.log"))
@@ -28,14 +28,18 @@ cur.execute("CREATE TABLE IF NOT EXISTS users (uid, salt, hash, name)")
 # if task_structure != expected_task_structure:
 #     app.logger.warning(f"tasks table is of {task_structure} instead of {expected_task_structure}")
 
-@app.route("/tasklists/<string:uid>", methods=["GET"])
+@app.route('/')
+def index():
+    return redirect('http://localhost/index.html')
+
+@app.route("/api/tasklists/<string:uid>", methods=["GET"])
 def tasklists(uid):
     # headers = dict(request.headers)
     # headers[""]
     cur.execute("SELECT * FROM lists WHERE uid=?", (uid,))
     return cur.fetchall()
 
-@app.route("/task/<int:taskid>", methods=["GET", "POST"])
+@app.route("/api/task/<int:taskid>", methods=["GET", "POST"])
 def task(taskid):
     pass
     if request.method == "GET":
@@ -47,7 +51,7 @@ def task(taskid):
         cur.execute("UPDATE tasks SET ? VALUES ?", (headers["name"], headers["content"], headers["priority"], headers["fromdate"], headers["todate"]))
         return
     
-@app.route("/newtask", methods=["POST"])
+@app.route("/api/newtask", methods=["POST"])
 def newtask():
     formData = request.form.to_dict()
     if 'priority' not in formData.keys(): formData['priority'] = None
@@ -56,7 +60,7 @@ def newtask():
     db_conn.commit()
     return "OK", 200
 
-@app.route("/login")
+@app.route("/api/login")
 def login():
     formData = request.form.to_dict()
     username = formData.get('username')
@@ -76,8 +80,8 @@ def login():
     else:
         return "ACCOUNT NOT FOUND", 500
 
-@app.route("/new_account")
-def login():
+@app.route("/api/new_account")
+def new_account():
     formData = request.form.to_dict()
     username = formData.get('username')
     password = formData.get('password')
