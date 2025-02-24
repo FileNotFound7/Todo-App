@@ -15,10 +15,17 @@ function main() {
         event.preventDefault();
         login()
     });
+
+    $('.account_form')[0].addEventListener("submit", (event) => {
+        event.preventDefault();
+        new_account()
+    });
     
     document.getElementById('new_task').addEventListener("click", (event) => {open_modal("#editor")});
-
+    
     document.getElementById('login_btn').addEventListener("click", (event) => {open_modal("#login")});
+
+    document.getElementById('account_btn').addEventListener("click", (event) => {open_modal("#new_account")});
 
     $('.dialog').dialog();
     $('.dialog').dialog('close');
@@ -34,8 +41,32 @@ async function login() {
         alert("Username and password must not be empty")
     }
     else{
-        const salt_response = await fetch(backend+"login")
-        salt = await salt_response.text()
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+
+        const response = await fetch(backend+"login", {method: "POST", body: formData,});
+        salt = await response.text()
+    }
+}
+
+async function new_account() {
+    username = $('#account_username')[0].value
+    password = $('#account_password')[0].value
+    if (username == '' || password == '') {
+        alert("Username and password must not be empty")
+    }
+    else{
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+
+        const response = await fetch(backend+"new_account", {method: "POST", body: formData,});
+        if (response.status == 200) {
+            const response = await fetch(backend+"login", {method: "POST", body: formData,});
+            console.log(await response.json)
+        }
+        salt = await response.text()
     }
 }
 
@@ -44,11 +75,7 @@ async function sendData() {
     const formData = new FormData(form);
 
     try {
-        const response = await fetch(backend+"newtask", {
-            method: "POST",
-            // Set the FormData instance as the request body
-            body: formData,
-        });
+        const response = await fetch(backend+"newtask", {method: "POST", body: formData,});
         console.log(await response.json());
     } catch (e) {
         console.error(e);
