@@ -51,8 +51,9 @@ def task(taskid):
         pass
         headers = dict(request.headers)
         cur.execute("UPDATE tasks SET ? VALUES ?", (headers["name"], headers["content"], headers["priority"], headers["fromdate"], headers["todate"]))
+        db_conn.commit()
         return
-    
+
 @app.route("/api/newtask", methods=["POST"])
 def newtask():
     formData = request.form.to_dict()
@@ -72,16 +73,16 @@ def login():
     data = cur.fetchall()
     if len(data) > 0:
         salt = data[0][1]
-        hashed = bcrypt.hashpw(password, salt)
+        hashed = bcrypt.hashpw(bytes(password, 'utf-8'), salt)
         if hashed == data[0][2]:
             token = secrets.token_urlsafe(16)
             refresh_token = secrets.token_urlsafe(16)
 
             expiry = time.time()+86400
 
-            data = {'token': token, 'expiry': expiry, 'user-agent': agent}
+            data = {'token': token, 'expiry': expiry, 'refresh': refresh_token, 'user-agent': agent}
             returned_data = {'token': token, 'refresh': refresh_token, 'expiry': expiry}
-            if tokens[username] is not None:
+            if tokens.get(username) is not None:
                 tokens[username][refresh_token] = data
             else:
                 tokens[username] = {}
@@ -89,7 +90,7 @@ def login():
 
 
             # tokens expire 1 day from creation. refresh token does not expire.
-            return data, 200
+            return returned_data, 200
     return "error", 404
 
 @app.route("/api/refresh", methods=["POST"])
@@ -121,10 +122,12 @@ def new_account():
     password = formData.get('password')
     cur.execute('SELECT * FROM users WHERE name = ?', (username,))
     data = cur.fetchall()
+    print(data)
     if len(data) == 0:
         salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password, salt)
+        hashed = bcrypt.hashpw(bytes(password, 'utf-8'), salt)
         cur.execute("INSERT INTO users (salt, hash, name) VALUES (?, ?, ?)", (salt, hashed, password))
+        db_conn.commit()
         return "log in now", 200
     else:
         return "account already exists", 409
