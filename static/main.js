@@ -46,7 +46,7 @@ async function login() {
         formData.append("password", password);
 
         const response = await fetch(backend+"login", {method: "POST", body: formData,});
-        salt = await response.text()
+        login(response, 'login')
     }
 }
 
@@ -62,11 +62,13 @@ async function new_account() {
         formData.append("password", password);
 
         const response = await fetch(backend+"new_account", {method: "POST", body: formData,});
-        if (response.status == 200) {
-            const response = await fetch(backend+"login", {method: "POST", body: formData,});
-            console.log(await response.json)
-        }
-        salt = await response.text()
+        login(response, 'account')
+    }
+}
+
+function login(response, form) {
+    if (response.status == 200) {
+        
     }
 }
 

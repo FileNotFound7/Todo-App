@@ -68,7 +68,6 @@ def login():
     formData = request.form.to_dict()
     username = formData.get('username')
     password = formData.get('password')
-    agent = request.headers.get('User-Agent')
     cur.execute('SELECT * FROM users WHERE name = ?', (username,))
     data = cur.fetchall()
     if len(data) > 0:
@@ -80,7 +79,7 @@ def login():
 
             expiry = time.time()+86400
 
-            data = {'token': token, 'expiry': expiry, 'refresh': refresh_token, 'user-agent': agent}
+            data = {'token': token, 'expiry': expiry, 'refresh': refresh_token}
             returned_data = {'token': token, 'refresh': refresh_token, 'expiry': expiry}
             if tokens.get(username) is not None:
                 tokens[username][refresh_token] = data
@@ -98,19 +97,14 @@ def refresh():
     formData = request.form.to_dict()
     username = formData.get('username')
     refresh_token = formData.get('refresh_token')
-    agent = request.headers.get('User-Agent')
     if refresh_token in tokens[username]:
-        if tokens[username][refresh_token]["user-agent"] == agent:
-            data = tokens[username][refresh_token]
-            token = secrets.token_urlsafe(16)
-            expiry = time.time()+86400
-            data["token"] = token
-            data["expiry"] = expiry
-            tokens[username][refresh_token] = data
-            data.pop("user-agent")
-            return data, 200
-        else:
-            return "invalid token - log back in", 410
+        data = tokens[username][refresh_token]
+        token = secrets.token_urlsafe(16)
+        expiry = time.time()+86400
+        data["token"] = token
+        data["expiry"] = expiry
+        tokens[username][refresh_token] = data
+        return data, 200
     else:
         return "invalid token or username", 401
 
@@ -123,22 +117,22 @@ def new_account():
     cur.execute('SELECT * FROM users WHERE name = ?', (username,))
     data = cur.fetchall()
     print(data)
+
+    # create account if it doesn't exist, then log in
     if len(data) == 0:
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(bytes(password, 'utf-8'), salt)
-        cur.execute("INSERT INTO users (salt, hash, name) VALUES (?, ?, ?)", (salt, hashed, password))
+        cur.execute("INSERT INTO users (salt, hash, name) VALUES (?, ?, ?)", (salt, hashed, username))
         db_conn.commit()
-        return "log in now", 200
-    else:
-        return "account already exists", 409
+    return login()
+    
 
 def validate_token(request):
     formData = request.form.to_dict()
     username = formData.get('username')
     token = formData.get('token')
-    agent = request.headers.get('User-Agent')
     for item in tokens[username]:
-        if item["token"] == token and item["user-agent"] == agent:
+        if item["token"] == token:
             return "valid", 200
     return "invalid", 401
 
