@@ -80,7 +80,6 @@ def login():
             expiry = time.time()+86400
 
             data = {'token': token, 'expiry': expiry, 'refresh': refresh_token}
-            returned_data = {'token': token, 'refresh': refresh_token, 'expiry': expiry}
             if tokens.get(username) is not None:
                 tokens[username][refresh_token] = data
             else:
@@ -89,7 +88,7 @@ def login():
 
 
             # tokens expire 1 day from creation. refresh token does not expire.
-            return returned_data, 200
+            return data, 200
     return "error", 404
 
 @app.route("/api/refresh", methods=["POST"])

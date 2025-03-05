@@ -38,7 +38,8 @@ async function login() {
     username = $('#login_username')[0].value
     password = $('#login_password')[0].value
     if (username == '' || password == '') {
-        alert("Username and password must not be empty")
+        $("#login_error").html("Details must not be blank.")
+        $("#login_error").show("blind");
     }
     else{
         const formData = new FormData();
@@ -46,7 +47,7 @@ async function login() {
         formData.append("password", password);
 
         const response = await fetch(backend+"login", {method: "POST", body: formData,});
-        login(response, 'login')
+        login(response)
     }
 }
 
@@ -54,7 +55,8 @@ async function new_account() {
     username = $('#account_username')[0].value
     password = $('#account_password')[0].value
     if (username == '' || password == '') {
-        alert("Username and password must not be empty")
+        $("#login_error").html("Details must not be blank.")
+        $("#login_error").show("blind");
     }
     else{
         const formData = new FormData();
@@ -62,13 +64,19 @@ async function new_account() {
         formData.append("password", password);
 
         const response = await fetch(backend+"new_account", {method: "POST", body: formData,});
-        login(response, 'account')
+        login(response)
     }
 }
 
-function login(response, form) {
+async function login(response) {
     if (response.status == 200) {
-        
+        data = await response.json();
+        localStorage.setItem('token', data['token']);
+        localStorage.setItem('expiry', data['expiry']);
+        localStorage.setItem('refresh', data['refresh']);
+    }
+    else{
+        $("#login_error").show("blind");
     }
 }
 
