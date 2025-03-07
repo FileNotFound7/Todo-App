@@ -23,7 +23,7 @@ cur = db_conn.cursor()
 
 tokens = {}
 
-cur.execute("CREATE TABLE IF NOT EXISTS tasks (taskid, listid, uid, name, content, priority, fromdate, todate, timestamp)")
+cur.execute("CREATE TABLE IF NOT EXISTS tasks (taskid, listid, username, name, content, priority, fromdate, todate, timestamp)")
 cur.execute("CREATE TABLE IF NOT EXISTS users (salt, hash, name)")
 # task_structure = cur.fetchall()
 # if task_structure != expected_task_structure:
@@ -31,14 +31,16 @@ cur.execute("CREATE TABLE IF NOT EXISTS users (salt, hash, name)")
 
 @app.route('/')
 def index():
-    return redirect('http://localhost/index.html')
+    return redirect('/index.html')
 
-@app.route("/api/tasklists/<string:uname>", methods=["GET"])
-def tasklists(uname):
+@app.route("/api/tasks", methods=["GET"])
+def tasklists():
     validate_token(request)
+    formData = request.form.to_dict()
+    username = formData.get('username')
     # headers = dict(request.headers)
     # headers[""]
-    cur.execute("SELECT * FROM lists WHERE uid=?", (uname,))
+    cur.execute("SELECT * FROM tasks WHERE username=?", (username,))
     return cur.fetchall()
 
 @app.route("/api/task/<int:taskid>", methods=["GET", "POST"])
@@ -56,10 +58,13 @@ def task(taskid):
 
 @app.route("/api/newtask", methods=["POST"])
 def newtask():
+    if not validate_token(request):
+        return 'Not logged in', 500
+    
     formData = request.form.to_dict()
     if 'priority' not in formData.keys(): formData['priority'] = None
     formData = { key: None if val == '' else val for key, val in formData.items() }
-    cur.execute("INSERT INTO tasks (name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", (formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
+    cur.execute("INSERT INTO tasks (username, name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", (formData['username'], formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
     db_conn.commit()
     return "OK", 200
 
@@ -79,7 +84,7 @@ def login():
 
             expiry = time.time()+86400
 
-            data = {'token': token, 'expiry': expiry, 'refresh': refresh_token}
+            data = {'token': token, 'expiry': expiry, 'refresh': refresh_token, 'username': username}
             if tokens.get(username) is not None:
                 tokens[username][refresh_token] = data
             else:
@@ -95,7 +100,7 @@ def login():
 def refresh():
     formData = request.form.to_dict()
     username = formData.get('username')
-    refresh_token = formData.get('refresh_token')
+    refresh_token = formData.get('refresh')
     if refresh_token in tokens[username]:
         data = tokens[username][refresh_token]
         token = secrets.token_urlsafe(16)
@@ -106,7 +111,6 @@ def refresh():
         return data, 200
     else:
         return "invalid token or username", 401
-
 
 @app.route("/api/new_account", methods=["POST"])
 def new_account():
@@ -124,15 +128,13 @@ def new_account():
         cur.execute("INSERT INTO users (salt, hash, name) VALUES (?, ?, ?)", (salt, hashed, username))
         db_conn.commit()
     return login()
-    
 
 def validate_token(request):
     formData = request.form.to_dict()
     username = formData.get('username')
     token = formData.get('token')
     for item in tokens[username]:
-        if item["token"] == token:
-            return "valid", 200
-    return "invalid", 401
-
+        if item["token"] == token and item['username'] == username:
+            return True
+    return False
 app.run()

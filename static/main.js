@@ -13,7 +13,7 @@ function main() {
 
     $('.login_form')[0].addEventListener("submit", (event) => {
         event.preventDefault();
-        login()
+        process_login()
     });
 
     $('.account_form')[0].addEventListener("submit", (event) => {
@@ -34,7 +34,7 @@ function main() {
     });
 }
 
-async function login() {
+async function process_login() {
     username = $('#login_username')[0].value
     password = $('#login_password')[0].value
     if (username == '' || password == '') {
@@ -47,7 +47,7 @@ async function login() {
         formData.append("password", password);
 
         const response = await fetch(backend+"login", {method: "POST", body: formData,});
-        login(response)
+        process_login(response)
     }
 }
 
@@ -64,20 +64,54 @@ async function new_account() {
         formData.append("password", password);
 
         const response = await fetch(backend+"new_account", {method: "POST", body: formData,});
-        login(response)
+        const login_response = await process_login(response)
     }
 }
 
-async function login(response) {
+async function process_login(response) {
     if (response.status == 200) {
         data = await response.json();
         localStorage.setItem('token', data['token']);
         localStorage.setItem('expiry', data['expiry']);
         localStorage.setItem('refresh', data['refresh']);
+        localStorage.setItem('username', data['username']);
+        return {'username': data['username'], 'expiry': data['expiry'], 'refresh': data['refresh'], 'token': data['token']}
     }
     else{
         $("#login_error").show("blind");
     }
+}
+
+async function fetch_tasks() {
+    var blank_form = new FormData()
+    response = await api_call('tasks', "GET", blank_form)
+    console.log(response);
+}
+
+async function api_call(endpoint, method, formData) {
+    const expiry = parseInt(localStorage.getItem('expiry'));
+    
+    // auto refresh token
+    if (expiry < Date.now()/1000) {
+        const username = localStorage.getItem('username');
+        const refresh = localStorage.getItem('refresh');
+
+        var refresh_headers = new Headers()
+        refresh_headers.append('username', username);
+        refresh_headers.append('refresh', refresh);
+
+        const response = await fetch(backend+"refresh", {method: 'GET', headers: refresh_headers,});
+
+        const login_data = await process_login(response);
+        formData.append("username", login_data['username']);
+        formData.append("token", login_data['token']);
+    }
+    else {
+        formData.append("username", localStorage.getItem('username'));
+        formData.append("token", localStorage.getItem('token'));
+    }
+    const response = await fetch(backend+endpoint, {method: method, body: body, headers});
+    return response;
 }
 
 async function sendData() {
