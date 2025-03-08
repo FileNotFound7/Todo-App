@@ -1,4 +1,5 @@
-const backend = 'http://localhost/api/'
+const backend = 'http://localhost/api/';
+var tasks;
 
 function main() {
     form = document.querySelector(".editor_form");
@@ -75,6 +76,7 @@ async function process_login(response) {
         localStorage.setItem('expiry', data['expiry']);
         localStorage.setItem('refresh', data['refresh']);
         localStorage.setItem('username', data['username']);
+        fetch_tasks()
         return {'username': data['username'], 'expiry': data['expiry'], 'refresh': data['refresh'], 'token': data['token']}
     }
     else{
@@ -83,22 +85,42 @@ async function process_login(response) {
 }
 
 async function fetch_tasks() {
-    const response = await api_call('tasks', {method:"GET"})
-    tasks = await response.json()
-    console.log(tasks)
+    const response = await api_call('tasks', {method:"GET"});
+    tasks = await response.json();
     
-    console.log(response);
+    render_tasks(tasks);
 }
 
-function render_tasks(tasks) {
+function render_tasks(list) {
     html = '<table>'
-    for (var task in tasks) {
-        if (!tasks.hasOwnProperty(task)) {
-            //The current property is not a direct property of p
+    html = html + '<tr><th>Name</th><th>Description</th><th>Priority</th><th>Start</th><th>End</th></tr>'
+    for (var task in list) {
+        if (!list.hasOwnProperty(task)) {
             continue;
         }
-        console.log(task)
-        html = html + `<tr><td class="name">${tasks[task][1]}</td><td class="description">${tasks[task][2]}</td><td>${tasks[task][3]}</td><td>${tasks[task][4]}</td><td>${tasks[task][5]}</td><td><button onclick=delete_task(this)>Delete</button></td></tr>`
+        if (list[task][4] == null) {
+            list[task][4] = "-"
+        }
+        else {
+            var date = new Date(Number(list[task][4]));
+            list[task][4] = date.toLocaleString();
+        }
+        if (list[task][5] == null) {
+            list[task][5] = "-";
+        }
+        else {
+            var date = new Date(Number(list[task][5]/1000));
+            list[task][5] = date.toString();
+        }
+
+        html = html +  `<tr id="${list[task][7]}">
+                        <td class="name">${list[task][1]}</td>
+                        <td class="description">${list[task][2]}</td>
+                        <td class="priority">${list[task][3]}</td>
+                        <td class="start">${list[task][4]}</td>
+                        <td class="end">${list[task][5]}</td>
+                        <td><button onclick=delete_task(this)>Delete</button></td>
+                        </tr>`
     }
     html = html + "</table>"
     document.getElementById('tasks').innerHTML = html;
@@ -106,12 +128,10 @@ function render_tasks(tasks) {
 
 async function delete_task(task) {
     row = task.parentElement.parentElement
-    var name = row.querySelector('.name').textContent;
-    var description = row.querySelector('.description').textContent;
+    var rowid = row.id;
     
     var delete_headers = new Headers();
-    delete_headers.append('taskname', name)
-    delete_headers.append('taskdescription', description)
+    delete_headers.append('rowid', rowid)
     const response = await api_call('deletetask', {method:"DELETE", headers:delete_headers})
     fetch_tasks()
 }

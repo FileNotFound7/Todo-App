@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect
 # from flask_cors import CORS
-import sqlite3, logging
+import sqlite3, logging, json
 from sys import stderr
 
 import time
@@ -25,6 +25,7 @@ tokens = {}
 
 cur.execute("CREATE TABLE IF NOT EXISTS tasks (username, name, content, priority, fromdate, todate, timestamp)")
 cur.execute("CREATE TABLE IF NOT EXISTS users (salt, hash, name)")
+cur.execute("CREATE TABLE IF NOT EXISTS tokens (json)")
 # task_structure = cur.fetchall()
 # if task_structure != expected_task_structure:
 #     app.logger.warning(f"tasks table is of {task_structure} instead of {expected_task_structure}")
@@ -39,8 +40,20 @@ def tasklists():
     username = request.headers.get('username')
     # headers = dict(request.headers)
     # headers[""]
-    cur.execute("SELECT * FROM tasks WHERE username=?", (username,))
+    cur.execute("SELECT *, rowid FROM tasks WHERE username=?", (username,))
     return cur.fetchall()
+
+@app.route("/api/updatetask", methods=["POST"])
+def updatetask():
+    if not validate_token(request):
+        return 'Not logged in', 500
+    
+    formData = request.form.to_dict()
+    if 'priority' not in formData.keys(): formData['priority'] = None
+    formData = { key: None if val == '' else val for key, val in formData.items() }
+    cur.execute("INSERT INTO tasks (username, name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?, ?)", (request.headers.get('username'), formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
+    db_conn.commit()
+    return "OK", 200
 
 @app.route("/api/newtask", methods=["POST"])
 def newtask():
@@ -59,7 +72,7 @@ def deletetask():
     if not validate_token(request):
         return 'Not logged in', 500
 
-    cur.execute("DELETE FROM tasks WHERE username=? AND name=? AND content=?", (request.headers.get('username'), request.headers.get('taskname'), request.headers.get('taskdescription'),))
+    cur.execute("DELETE FROM tasks WHERE rowid=?", (request.headers.get('rowid'),))
     db_conn.commit()
     return "OK", 204
 
