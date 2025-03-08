@@ -25,7 +25,6 @@ tokens = {}
 
 cur.execute("CREATE TABLE IF NOT EXISTS tasks (username, name, content, priority, fromdate, todate, timestamp)")
 cur.execute("CREATE TABLE IF NOT EXISTS users (salt, hash, name)")
-cur.execute("CREATE TABLE IF NOT EXISTS tokens (json)")
 # task_structure = cur.fetchall()
 # if task_structure != expected_task_structure:
 #     app.logger.warning(f"tasks table is of {task_structure} instead of {expected_task_structure}")
