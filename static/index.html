@@ -15,11 +15,17 @@
 
 <body>
     <div class="toolbar" id="toolbar">
-        <picture id="search">
-            <source srcset="light/search.svg" media="(prefers-color-scheme: light)" /> <!-- User prefers light mode: -->
-            <source srcset="dark/search.svg" media="(prefers-color-scheme: dark)" /> <!-- User prefers dark mode: -->
-            <img src="light/search.svg" /> <!-- User has no color preference: -->
-        </picture>
+        <button id="search_btn">Search</button>
+        <button id="lists_btn">Lists</button>
+        <button>Search</button>
+        <div id="user_indicator"></div>
+        <button id="account_btn">Account</button>
+
+        <!-- <picture id="search">
+            <source srcset="light/search.svg" media="(prefers-color-scheme: light)" />
+            <source srcset="dark/search.svg" media="(prefers-color-scheme: dark)" />
+            <img src="light/search.svg" />
+        </picture> -->
         <!-- <canvas id="dvd_sidebar" class="dvd"></canvas> -->
     </div>
     <div class="editor_bg">
@@ -44,7 +50,7 @@
                 <input type="submit" value="Log In!">
             </form>
         </div>
-        <div id="new_account" class="dialog" title="New Account">
+        <div id="new_account" class="dialog" title="New account / Sign in">
             <div id="login_error" class="ui-widget ui-state-error ui-corner-all">Incorrect login details</div>
             <form class="account_form">
                 <input type="text" class="inputBox" id="account_username">
@@ -56,8 +62,6 @@
     <div class="content">
         <div id="controls">
             <button id="new_task">New Task</button>
-            <button id="login_btn">Log in</button>
-            <button id="account_btn">New account</button>
         </div>
         <div id="tasks"></div>
     </div>

@@ -23,7 +23,7 @@ cur = db_conn.cursor()
 
 tokens = {}
 
-cur.execute("CREATE TABLE IF NOT EXISTS tasks (taskid, listid, username, name, content, priority, fromdate, todate, timestamp)")
+cur.execute("CREATE TABLE IF NOT EXISTS tasks (username, name, content, priority, fromdate, todate, timestamp)")
 cur.execute("CREATE TABLE IF NOT EXISTS users (salt, hash, name)")
 # task_structure = cur.fetchall()
 # if task_structure != expected_task_structure:
@@ -36,8 +36,7 @@ def index():
 @app.route("/api/tasks", methods=["GET"])
 def tasklists():
     validate_token(request)
-    formData = request.form.to_dict()
-    username = formData.get('username')
+    username = request.headers.get('username')
     # headers = dict(request.headers)
     # headers[""]
     cur.execute("SELECT * FROM tasks WHERE username=?", (username,))
@@ -64,7 +63,7 @@ def newtask():
     formData = request.form.to_dict()
     if 'priority' not in formData.keys(): formData['priority'] = None
     formData = { key: None if val == '' else val for key, val in formData.items() }
-    cur.execute("INSERT INTO tasks (username, name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?)", (formData['username'], formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
+    cur.execute("INSERT INTO tasks (username, name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?, ?)", (request.headers.get('username'), formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
     db_conn.commit()
     return "OK", 200
 
@@ -76,9 +75,9 @@ def login():
     cur.execute('SELECT * FROM users WHERE name = ?', (username,))
     data = cur.fetchall()
     if len(data) > 0:
-        salt = data[0][1]
+        salt = data[0][0]
         hashed = bcrypt.hashpw(bytes(password, 'utf-8'), salt)
-        if hashed == data[0][2]:
+        if hashed == data[0][1]:
             token = secrets.token_urlsafe(16)
             refresh_token = secrets.token_urlsafe(16)
 
@@ -91,16 +90,14 @@ def login():
                 tokens[username] = {}
                 tokens[username][refresh_token] = data
 
-
             # tokens expire 1 day from creation. refresh token does not expire.
             return data, 200
     return "error", 404
 
-@app.route("/api/refresh", methods=["POST"])
+@app.route("/api/refresh", methods=["GET"])
 def refresh():
-    formData = request.form.to_dict()
-    username = formData.get('username')
-    refresh_token = formData.get('refresh')
+    username = request.headers.get('username')
+    refresh_token = request.headers.get('refresh')
     if refresh_token in tokens[username]:
         data = tokens[username][refresh_token]
         token = secrets.token_urlsafe(16)
@@ -123,18 +120,20 @@ def new_account():
 
     # create account if it doesn't exist, then log in
     if len(data) == 0:
+        print('creating new account')
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(bytes(password, 'utf-8'), salt)
         cur.execute("INSERT INTO users (salt, hash, name) VALUES (?, ?, ?)", (salt, hashed, username))
         db_conn.commit()
+    print(tokens)
     return login()
 
 def validate_token(request):
-    formData = request.form.to_dict()
-    username = formData.get('username')
-    token = formData.get('token')
-    for item in tokens[username]:
+    username = request.headers.get('username')
+    token = request.headers.get('token')
+    for item in tokens[username].values():
         if item["token"] == token and item['username'] == username:
             return True
     return False
+
 app.run()

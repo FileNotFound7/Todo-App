@@ -7,13 +7,13 @@ function main() {
     // Take over form submission
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        sendData();
-        close_modal("#editor");
-    });
 
-    $('.login_form')[0].addEventListener("submit", (event) => {
-        event.preventDefault();
-        process_login()
+        const formData = new FormData(form);
+
+        api_call('newtask', {method: 'POST', body: formData});
+
+        
+        close_modal("#editor");
     });
 
     $('.account_form')[0].addEventListener("submit", (event) => {
@@ -22,8 +22,6 @@ function main() {
     });
     
     document.getElementById('new_task').addEventListener("click", (event) => {open_modal("#editor")});
-    
-    document.getElementById('login_btn').addEventListener("click", (event) => {open_modal("#login")});
 
     document.getElementById('account_btn').addEventListener("click", (event) => {open_modal("#new_account")});
 
@@ -32,23 +30,14 @@ function main() {
     $('.dialog').on('dialogclose', function(){
         close_modal(this)
     });
-}
 
-async function process_login() {
-    username = $('#login_username')[0].value
-    password = $('#login_password')[0].value
-    if (username == '' || password == '') {
-        $("#login_error").html("Details must not be blank.")
-        $("#login_error").show("blind");
+    if (localStorage.getItem('username') != null) {
+        signinstatus = "Logged in as " + localStorage.getItem('username')
     }
-    else{
-        const formData = new FormData();
-        formData.append("username", username);
-        formData.append("password", password);
-
-        const response = await fetch(backend+"login", {method: "POST", body: formData,});
-        process_login(response)
+    else {
+        signinstatus = 'Not logged in'
     }
+    document.getElementById('user_indicator').textContent = signinstatus;
 }
 
 async function new_account() {
@@ -83,12 +72,30 @@ async function process_login(response) {
 }
 
 async function fetch_tasks() {
-    var blank_form = new FormData()
-    response = await api_call('tasks', "GET", blank_form)
+    const response = await api_call('tasks', {method:"GET"})
+    tasks = await response.json()
+    console.log(tasks)
+
+    html = '<div>'
+
+    for (var task in tasks) {
+        if (!tasks.hasOwnProperty(task)) {
+            //The current property is not a direct property of p
+            continue;
+        }
+        console.log(task)
+        html = html + `<div><div>${tasks[task][1]}</div><div>${tasks[task][2]}</div><div>${tasks[task][3]}</div><div>${tasks[task][4]}</div><div>${tasks[task][5]}</div></div>`
+    }
+    html = html + "</div>"
+    document.getElementById('tasks').innerHTML = html;
+
     console.log(response);
 }
 
-async function api_call(endpoint, method, formData) {
+async function api_call(endpoint, request_init = {}) {
+    if (!request_init.headers) {
+        request_init.headers = new Headers()
+    }
     const expiry = parseInt(localStorage.getItem('expiry'));
     
     // auto refresh token
@@ -100,30 +107,18 @@ async function api_call(endpoint, method, formData) {
         refresh_headers.append('username', username);
         refresh_headers.append('refresh', refresh);
 
-        const response = await fetch(backend+"refresh", {method: 'GET', headers: refresh_headers,});
+        const refresh_response = await fetch(backend+"refresh", {method: 'GET', headers: refresh_headers,});
 
-        const login_data = await process_login(response);
-        formData.append("username", login_data['username']);
-        formData.append("token", login_data['token']);
+        const login_data = await process_login(refresh_response);
+        request_init.headers.append("username", login_data['username']);
+        request_init.headers.append("token", login_data['token']);
     }
     else {
-        formData.append("username", localStorage.getItem('username'));
-        formData.append("token", localStorage.getItem('token'));
+        request_init.headers.append("username", localStorage.getItem('username'));
+        request_init.headers.append("token", localStorage.getItem('token'));
     }
-    const response = await fetch(backend+endpoint, {method: method, body: body, headers});
+    const response = await fetch(backend+endpoint, request_init);
     return response;
-}
-
-async function sendData() {
-    // Associate the FormData object with the form element
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch(backend+"newtask", {method: "POST", body: formData,});
-        console.log(await response.json());
-    } catch (e) {
-        console.error(e);
-    }
 }
 
 // 

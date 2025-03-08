@@ -11,8 +11,10 @@
 }
 
 .content {
+    margin: 0px;
     margin-left: calc(var(--toolbar-width) + 2*var(--padding));
-    height: calc(100% - 2*var(--padding));
+    height: 100%;
+    width: calc(100% - var(--toolbar-width));
     padding: var(--padding);
     background: light-dark(var(--light-primary), var(--dark-primary));
     padding-left: 10%;
