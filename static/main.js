@@ -4,14 +4,23 @@ function main() {
     form = document.querySelector(".editor_form");
     editor_bg = document.querySelector(".editor_bg");
 
-    // Take over form submission
+    // New task submission
     form.addEventListener("submit", (event) => {
         event.preventDefault();
 
         const formData = new FormData(form);
 
-        api_call('newtask', {method: 'POST', body: formData});
+        if (formData.get('from')) {
+            formData.set('from', Date.parse(formData.get('from')))
+        }
 
+        if (formData.get('to')) {
+            formData.set('to', Date.parse(formData.get('to')))
+        }
+
+        formData.set('timestamp', Date.now())
+
+        api_call('newtask', {method: 'POST', body: formData});
         
         close_modal("#editor");
     });
@@ -38,6 +47,8 @@ function main() {
         signinstatus = 'Not logged in'
     }
     document.getElementById('user_indicator').textContent = signinstatus;
+
+    fetch_tasks();
 }
 
 async function new_account() {
@@ -75,21 +86,34 @@ async function fetch_tasks() {
     const response = await api_call('tasks', {method:"GET"})
     tasks = await response.json()
     console.log(tasks)
+    
+    console.log(response);
+}
 
-    html = '<div>'
-
+function render_tasks(tasks) {
+    html = '<table>'
     for (var task in tasks) {
         if (!tasks.hasOwnProperty(task)) {
             //The current property is not a direct property of p
             continue;
         }
         console.log(task)
-        html = html + `<div><div>${tasks[task][1]}</div><div>${tasks[task][2]}</div><div>${tasks[task][3]}</div><div>${tasks[task][4]}</div><div>${tasks[task][5]}</div></div>`
+        html = html + `<tr><td class="name">${tasks[task][1]}</td><td class="description">${tasks[task][2]}</td><td>${tasks[task][3]}</td><td>${tasks[task][4]}</td><td>${tasks[task][5]}</td><td><button onclick=delete_task(this)>Delete</button></td></tr>`
     }
-    html = html + "</div>"
+    html = html + "</table>"
     document.getElementById('tasks').innerHTML = html;
+}
 
-    console.log(response);
+async function delete_task(task) {
+    row = task.parentElement.parentElement
+    var name = row.querySelector('.name').textContent;
+    var description = row.querySelector('.description').textContent;
+    
+    var delete_headers = new Headers();
+    delete_headers.append('taskname', name)
+    delete_headers.append('taskdescription', description)
+    const response = await api_call('deletetask', {method:"DELETE", headers:delete_headers})
+    fetch_tasks()
 }
 
 async function api_call(endpoint, request_init = {}) {

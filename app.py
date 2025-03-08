@@ -42,19 +42,6 @@ def tasklists():
     cur.execute("SELECT * FROM tasks WHERE username=?", (username,))
     return cur.fetchall()
 
-@app.route("/api/task/<int:taskid>", methods=["GET", "POST"])
-def task(taskid):
-    pass
-    if request.method == "GET":
-        cur.execute("SELECT * FROM tasks WHERE taskid=?", (taskid,))
-        return cur.fetchall()
-    else:
-        pass
-        headers = dict(request.headers)
-        cur.execute("UPDATE tasks SET ? VALUES ?", (headers["name"], headers["content"], headers["priority"], headers["fromdate"], headers["todate"]))
-        db_conn.commit()
-        return
-
 @app.route("/api/newtask", methods=["POST"])
 def newtask():
     if not validate_token(request):
@@ -66,6 +53,15 @@ def newtask():
     cur.execute("INSERT INTO tasks (username, name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?, ?)", (request.headers.get('username'), formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
     db_conn.commit()
     return "OK", 200
+
+@app.route("/api/deletetask", methods=["DELETE"])
+def deletetask():
+    if not validate_token(request):
+        return 'Not logged in', 500
+
+    cur.execute("DELETE FROM tasks WHERE username=? AND name=? AND content=?", (request.headers.get('username'), request.headers.get('taskname'), request.headers.get('taskdescription'),))
+    db_conn.commit()
+    return "OK", 204
 
 @app.route("/api/login", methods=["POST"])
 def login():
