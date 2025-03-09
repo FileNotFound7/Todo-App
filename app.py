@@ -42,18 +42,6 @@ def tasklists():
     cur.execute("SELECT *, rowid FROM tasks WHERE username=?", (username,))
     return cur.fetchall()
 
-@app.route("/api/updatetask", methods=["POST"])
-def updatetask():
-    if not validate_token(request):
-        return 'Not logged in', 500
-    
-    formData = request.form.to_dict()
-    if 'priority' not in formData.keys(): formData['priority'] = None
-    formData = { key: None if val == '' else val for key, val in formData.items() }
-    cur.execute("INSERT INTO tasks (username, name, content, priority, fromdate, todate) VALUES (?, ?, ?, ?, ?, ?)", (request.headers.get('username'), formData['name'], formData['description'], formData['priority'], formData['from'], formData['to']))
-    db_conn.commit()
-    return "OK", 200
-
 @app.route("/api/newtask", methods=["POST"])
 def newtask():
     if not validate_token(request):
